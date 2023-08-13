@@ -40,20 +40,18 @@ CREATE TABLE `admins` (
 INSERT INTO `admins` (`id`, `name`, `password`) VALUES
 (1, 'admin', '6216f8a75fd5bb3d5f22b6f9958cdede3fc086c2');
 
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cart`
+-- Table structure for table `users`
 --
 
-CREATE TABLE `cart` (
+CREATE TABLE `users` (
   `id` int(100) PRIMARY KEY,
-  `user_id` int(100) NOT NULL,
-  `pid` int(100) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `price` int(10) NOT NULL,
-  `quantity` int(10) NOT NULL,
-  `image` varchar(100) NOT NULL
+  `name` varchar(20) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `password` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -98,138 +96,63 @@ CREATE TABLE `orders` (
 --
 
 CREATE TABLE `products` (
-  `id` int(100) PRIMARY KEY,
+  `id` int(100) NOT NULL AUTO_INCREMENT,
   `admin_id` int(100),
   `name` varchar(100) NOT NULL,
   `details` varchar(500) NOT NULL,
   `price` int(10) NOT NULL,
   `image_01` varchar(100) NOT NULL,
   `image_02` varchar(100) NOT NULL,
-  `image_03` varchar(100) NOT NULL
+  `image_03` varchar(100) NOT NULL,
+   PRIMARY KEY(`id`),
+   FOREIGN KEY (`admin_id`) REFERENCES `admins` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Table structure for table `cart`
 --
 
-CREATE TABLE `users` (
-  `id` int(100) PRIMARY KEY,
-  `name` varchar(20) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `wishlist`
---
-
-CREATE TABLE `wishlist` (
-  `id` int(100) PRIMARY KEY,
+CREATE TABLE `cart` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
   `user_id` int(100) NOT NULL,
-  `pid` int(100) NOT NULL,
   `name` varchar(100) NOT NULL,
   `price` int(10) NOT NULL,
-  `image` varchar(100) NOT NULL
+  `quantity` int(10) NOT NULL,
+  `image` varchar(100) NOT NULL,
+   PRIMARY KEY(`id`),
+   FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Indexes for dumped tables
---
-
--- Indexes for table `cart`
---
-ALTER TABLE `cart`
-  ADD KEY `user_id` (`user_id`),
- ADD KEY `pid` (`pid`);
--- Indexes for table `messages`
---
-ALTER TABLE `messages`
-  ADD KEY `user_id` (`user_id`);
--- Indexes for table `orders`
---
-ALTER TABLE `orders`
-  ADD KEY `user_id` (`user_id`);
---
--- Indexes for table `wishlist`
---
-ALTER TABLE `wishlist`
-  ADD KEY `user_id` (`user_id`),
- ADD KEY `pid` (`pid`);
-ALTER TABLE `product`
-  ADD KEY `admin_id` (`admin_id`);
---
--- AUTO_INCREMENT for dumped tables
---
+-- --------------------------------------------------------
 
 --
--- AUTO_INCREMENT for table `admins`
+-- Table structure for table `order_detail`
 --
-ALTER TABLE `admins`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+CREATE TABLE `order_detail` (
+`oid` int(100),
+`pid` int(100), 
+`number` int(10),
+    PRIMARY KEY (oid, pid),
+    FOREIGN KEY (oid) REFERENCES orders (id),
+    FOREIGN KEY (pid) REFERENCES products (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
 
 --
--- AUTO_INCREMENT for table `cart`
+-- Table structure for table `cart_detail`
 --
-ALTER TABLE `cart`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT;
+CREATE TABLE `cart_detail` (
+cart_id int(100),
+pid int(100), 
+quantity int(10),
+    PRIMARY KEY (cart_id, pid),
+    FOREIGN KEY (cart_id) REFERENCES cart (id),
+    FOREIGN KEY (pid) REFERENCES products (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- AUTO_INCREMENT for table `messages`
---
-ALTER TABLE `messages`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `orders`
---
-ALTER TABLE `orders`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `products`
---
-ALTER TABLE `products`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `wishlist`
---
-ALTER TABLE `wishlist`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT;
-COMMIT;
-
--- Constraints for table `cart`
---
-ALTER TABLE `cart`
-  ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `cart_ibfk_2` FOREIGN KEY (`pid`) REFERENCES `products` (`id`) ON DELETE CASCADE;
-  
- -- Constraints for table `messages`
---
-ALTER TABLE `messages`
-  ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-  
-  -- Constraints for table `messages`
---
-ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-   -- Constraints for table `wishlist`
---
-ALTER TABLE `wishlist`
-  ADD CONSTRAINT `wishlist_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `wishlist_ibfk_2` FOREIGN KEY (`pid`) REFERENCES `products` (`id`) ON DELETE CASCADE; 
-ALTER TABLE `products`
-  ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `admins` (`id`) ON DELETE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
